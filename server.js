@@ -1,79 +1,110 @@
-require('dotenv').config();
-const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+require("dotenv").config();
+
+const express = require("express");
+const cors = require("cors");
+const fs = require("fs");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+const { initializeApp, cert } = require("firebase-admin/app");
+const { getFirestore } = require("firebase-admin/firestore");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.set('view engine', 'ejs');
+// Firebase Admin
+const serviceAccount = require("./firebase-service-account.json");
 
-app.get('/', (req, res) => {
-  res.render('index.ejs');
+initializeApp({
+  credential: cert(serviceAccount),
 });
 
-app.post('/checkout', async (req, res) => {
+const db = getFirestore();
+
+app.use(cors());
+app.use(express.static("public"));
+app.use(express.json());
+
+// create checkout session
+app.post("/create-checkout-session", async (req, res) => {
   try {
-    const PRICE_MAP = {
-      basic: 500,
-      pro: 1500,
-      premium: 3000,
-    };
+    const { userId, email } = req.body;
 
-    const { plan } = req.body;
-    const amount = PRICE_MAP[plan];
-
-    if (!amount) {
-      return res.status(400).send('Invalid plan');
+    if (!userId || !email) {
+      return res.status(400).json({ error: "Missing userId or email" });
     }
 
     const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
+      mode: "payment",
+      customer_email: email,
       line_items: [
         {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `${plan} plan`,
-            },
-            unit_amount: amount,
-          },
+          price: process.env.PRICE_ID,
           quantity: 1,
         },
       ],
-      success_url: `${process.env.BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.BASE_URL}/cancel`,
+      success_url: "http://localhost:3000/success.html",
+      cancel_url: "http://localhost:3000/index.html",
+      metadata: {
+        userId,
+        email,
+      },
     });
 
-    res.redirect(303, session.url);
+    res.json({ url: session.url });
   } catch (error) {
-    console.error('CHECKOUT ERROR:', error);
-    res.status(500).send(error.message);
+    console.error("Checkout error:", error.message);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
-app.get('/success', async (req, res) => {
-  try {
-    const result = await Promise.all([
-      stripe.checkout.sessions.retrieve(req.query.session_id, {
-        expand: ['payment_intent.payment_method'],
-      }),
-      stripe.checkout.sessions.listLineItems(req.query.session_id),
-    ]);
+// webhook needs raw body
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    const sig = req.headers["stripe-signature"];
+    let event;
 
-    console.log(JSON.stringify(result, null, 2));
-    res.send('Your payment was successful');
-  } catch (error) {
-    console.error('SUCCESS ERROR:', error);
-    res.status(500).send(error.message);
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } catch (err) {
+      console.error("Webhook signature error:", err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object;
+
+      const userId = session.metadata.userId;
+      const email = session.metadata.email;
+
+      try {
+        await db.collection("users").doc(userId).set(
+          {
+            email: email,
+            paid: true,
+            plan: "premium",
+            stripeCustomerEmail: session.customer_email || email,
+            stripeSessionId: session.id,
+            paidAt: new Date().toISOString(),
+          },
+          { merge: true }
+        );
+
+        console.log(`Saved paid status for user ${userId}`);
+      } catch (dbError) {
+        console.error("Firestore save error:", dbError.message);
+      }
+    }
+
+    res.json({ received: true });
   }
-});
-
-app.get('/cancel', (req, res) => {
-  res.redirect('/');
-});
+);
 
 app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
