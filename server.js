@@ -1,43 +1,72 @@
-require("dotenv").config();
+require('dotenv').config()
+const express = require('express')
+const stripe=require('stripe')(process.env.STRIPE_SECRET_KEY)
+const PORT = process.env.PORT || 3000;
 
-const express = require("express");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
-const app = express();
+app.listen(PORT, () => {
+  console.log("Server running");
+});
+const app = express()
 app.use(express.json());
-app.use(express.static("public"));
+app.set('view engine', 'ejs')
 
-// create checkout
-app.post("/checkout", async (req, res) => {
-  const session = await stripe.checkout.sessions.create({
-    mode: "payment",
-    line_items: [
-      {
-        price: process.env.PRICE_ID,
-        quantity: 1,
-      },
-    ],
-    success_url: "http://localhost:3000/success.html",
-    cancel_url: "http://localhost:3000/index.html",
-  });
+app.get('/', (req, res) => {
+    res.render('index.ejs')
+})
+app.use(express.urlencoded({ extended: true }));
 
-  res.json({ url: session.url });
+app.post('/checkout', async (req, res) => {
+  try {
+    const PRICE_MAP = {
+      basic: 500,
+      pro: 1500,
+      premium: 3000,
+    };
+
+    const { plan } = req.body;
+    const amount = PRICE_MAP[plan];
+
+    if (!amount) {
+      return res.status(400).send('Invalid plan');
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `${plan} plan`,
+            },
+            unit_amount: amount,
+          },
+          quantity: 1,
+        },
+      ],
+      success_url: `${process.env.BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.BASE_URL}/cancel`,
+    });
+
+    res.redirect(303, session.url);
+  } catch (error) {
+    console.error('CHECKOUT ERROR:', error);
+    res.status(500).send(error.message);
+  }
 });
 
-// FAKE save (for now)
-let paidUsers = {};
+app.get('/success', async (req, res) => {
+    const result = Promise.all([
+        stripe.checkout.sessions.retrieve(req.query.session_id, { expand: ['payment_intent.payment_method'] }),
+        stripe.checkout.sessions.listLineItems(req.query.session_id)
+    ])
 
-// simulate saving payment
-app.post("/mark-paid", (req, res) => {
-  const { userId } = req.body;
-  paidUsers[userId] = true;
-  res.send("saved");
-});
+    console.log(JSON.stringify(await result))
 
-// check if paid
-app.get("/check-paid/:userId", (req, res) => {
-  const userId = req.params.userId;
-  res.json({ paid: paidUsers[userId] === true });
-});
+    res.send('Your payment was successful')
+})
 
-app.listen(3000, () => console.log("Server running"));
+app.get('/cancel', (req, res) => {
+    res.redirect('/')
+})
+app.listen(3000, () => console.log('Server started on port 3000'))
