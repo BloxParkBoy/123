@@ -12,9 +12,7 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log("Server running");
-});
+
 app.post('/checkout', async (req,res)=>{
     const session = await stripe.checkout.sessions.create({
         line_items:[
@@ -61,3 +59,7 @@ app.get('/cancel', (req, res) => {
     res.redirect('/')
 })
 app.listen(3000, () => console.log('Server started on port 3000'))
+
+app.listen(PORT, () => {
+  console.log("Server running");
+});
