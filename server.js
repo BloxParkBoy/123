@@ -1,19 +1,17 @@
-require('dotenv').config()
-const express = require('express')
-const stripe=require('stripe')(process.env.STRIPE_SECRET_KEY)
+require('dotenv').config();
+const express = require('express');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log("Server running");
-});
-const app = express()
 app.use(express.json());
-app.set('view engine', 'ejs')
+app.use(express.urlencoded({ extended: true }));
+app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-    res.render('index.ejs')
-})
-app.use(express.urlencoded({ extended: true }));
+  res.render('index.ejs');
+});
 
 app.post('/checkout', async (req, res) => {
   try {
@@ -56,17 +54,26 @@ app.post('/checkout', async (req, res) => {
 });
 
 app.get('/success', async (req, res) => {
-    const result = Promise.all([
-        stripe.checkout.sessions.retrieve(req.query.session_id, { expand: ['payment_intent.payment_method'] }),
-        stripe.checkout.sessions.listLineItems(req.query.session_id)
-    ])
+  try {
+    const result = await Promise.all([
+      stripe.checkout.sessions.retrieve(req.query.session_id, {
+        expand: ['payment_intent.payment_method'],
+      }),
+      stripe.checkout.sessions.listLineItems(req.query.session_id),
+    ]);
 
-    console.log(JSON.stringify(await result))
-
-    res.send('Your payment was successful')
-})
+    console.log(JSON.stringify(result, null, 2));
+    res.send('Your payment was successful');
+  } catch (error) {
+    console.error('SUCCESS ERROR:', error);
+    res.status(500).send(error.message);
+  }
+});
 
 app.get('/cancel', (req, res) => {
-    res.redirect('/')
-})
-app.listen(3000, () => console.log('Server started on port 3000'))
+  res.redirect('/');
+});
+
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
+});
