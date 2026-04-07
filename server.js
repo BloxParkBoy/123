@@ -60,7 +60,7 @@ app.get('/success', async (req, res) => {
         stripe.checkout.sessions.retrieve(req.query.session_id, { expand: ['payment_intent.payment_method'] }),
         stripe.checkout.sessions.listLineItems(req.query.session_id)
     ])
-
+    <a href = "script.js" download class = "btn">Downlaod</a>
     console.log(JSON.stringify(await result))
 
     res.send('Your payment was successful')
