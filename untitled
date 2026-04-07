@@ -1,0 +1,319 @@
+[
+    {
+        "id": "cs_test_b14dsYixUqHwvy2YB80Aqkt05zjXlMjvhdF6RnbdxM8l1y7GRz8gpmO4wT",
+        "object": "checkout.session",
+        "adaptive_pricing": {
+            "enabled": true
+        },
+        "after_expiration": null,
+        "allow_promotion_codes": null,
+        "amount_subtotal": 9000,
+        "amount_total": 9000,
+        "automatic_tax": {
+            "enabled": false,
+            "liability": null,
+            "provider": null,
+            "status": null
+        },
+        "billing_address_collection": null,
+        "branding_settings": {
+            "background_color": "#ffffff",
+            "border_style": "rounded",
+            "button_color": "#0074d4",
+            "display_name": "christopher leung",
+            "font_family": "default",
+            "icon": null,
+            "logo": null
+        },
+        "cancel_url": "http://localhost:3000/cancel",
+        "client_reference_id": null,
+        "client_secret": null,
+        "collected_information": null,
+        "consent": null,
+        "consent_collection": null,
+        "created": 1775514389,
+        "currency": "usd",
+        "currency_conversion": null,
+        "custom_fields": [],
+        "custom_text": {
+            "after_submit": null,
+            "shipping_address": null,
+            "submit": null,
+            "terms_of_service_acceptance": null
+        },
+        "customer": null,
+        "customer_account": null,
+        "customer_creation": "if_required",
+        "customer_details": {
+            "address": {
+                "city": null,
+                "country": "US",
+                "line1": null,
+                "line2": null,
+                "postal_code": "22222",
+                "state": null
+            },
+            "business_name": null,
+            "email": "bloxy.cool@gmail.com",
+            "individual_name": null,
+            "name": "Christopher leung",
+            "phone": null,
+            "tax_exempt": "none",
+            "tax_ids": []
+        },
+        "customer_email": null,
+        "discounts": [],
+        "expires_at": 1775600789,
+        "integration_identifier": null,
+        "invoice": null,
+        "invoice_creation": {
+            "enabled": false,
+            "invoice_data": {
+                "account_tax_ids": null,
+                "custom_fields": null,
+                "description": null,
+                "footer": null,
+                "issuer": null,
+                "metadata": {},
+                "rendering_options": null
+            }
+        },
+        "livemode": false,
+        "locale": null,
+        "metadata": {},
+        "mode": "payment",
+        "origin_context": null,
+        "payment_intent": {
+            "id": "pi_3TJLc21Hq4qjXYyy0ximzzg3",
+            "object": "payment_intent",
+            "amount": 9000,
+            "amount_capturable": 0,
+            "amount_details": {
+                "shipping": {
+                    "amount": 0,
+                    "from_postal_code": null,
+                    "to_postal_code": null
+                },
+                "tax": {
+                    "total_tax_amount": 0
+                },
+                "tip": {}
+            },
+            "amount_received": 9000,
+            "application": null,
+            "application_fee_amount": null,
+            "automatic_payment_methods": null,
+            "canceled_at": null,
+            "cancellation_reason": null,
+            "capture_method": "automatic_async",
+            "client_secret": "pi_3TJLc21Hq4qjXYyy0ximzzg3_secret_62fs7qviuTILhxxAzwXj4Qtkf",
+            "confirmation_method": "automatic",
+            "created": 1775514438,
+            "currency": "usd",
+            "customer": null,
+            "customer_account": null,
+            "description": null,
+            "excluded_payment_method_types": null,
+            "last_payment_error": null,
+            "latest_charge": "ch_3TJLc21Hq4qjXYyy0pAOPFgr",
+            "livemode": false,
+            "metadata": {},
+            "next_action": null,
+            "on_behalf_of": null,
+            "payment_details": {
+                "customer_reference": null,
+                "order_reference": "cs_test_b14dsYixUqHwvy2YB80Aqkt05zjXlMjvhdF6RnbdxM8l1y7GRz8gpmO4wT"
+            },
+            "payment_method": {
+                "id": "pm_1TJLc11Hq4qjXYyyhg4gnDop",
+                "object": "payment_method",
+                "allow_redisplay": "limited",
+                "billing_details": {
+                    "address": {
+                        "city": null,
+                        "country": "US",
+                        "line1": null,
+                        "line2": null,
+                        "postal_code": "22222",
+                        "state": null
+                    },
+                    "email": "bloxy.cool@gmail.com",
+                    "name": "Christopher leung",
+                    "phone": null,
+                    "tax_id": null
+                },
+                "card": {
+                    "brand": "visa",
+                    "checks": {
+                        "address_line1_check": null,
+                        "address_postal_code_check": "pass",
+                        "cvc_check": "pass"
+                    },
+                    "country": "US",
+                    "display_brand": "visa",
+                    "exp_month": 2,
+                    "exp_year": 2028,
+                    "fingerprint": "d69aej1A0hweriCx",
+                    "funding": "credit",
+                    "generated_from": null,
+                    "last4": "4242",
+                    "networks": {
+                        "available": [
+                            "visa"
+                        ],
+                        "preferred": null
+                    },
+                    "regulated_status": "unregulated",
+                    "three_d_secure_usage": {
+                        "supported": true
+                    },
+                    "wallet": null
+                },
+                "created": 1775514438,
+                "customer": null,
+                "customer_account": null,
+                "livemode": false,
+                "metadata": {},
+                "type": "card"
+            },
+            "payment_method_configuration_details": null,
+            "payment_method_options": {
+                "card": {
+                    "installments": null,
+                    "mandate_options": null,
+                    "network": null,
+                    "request_three_d_secure": "automatic"
+                }
+            },
+            "payment_method_types": [
+                "card"
+            ],
+            "processing": null,
+            "receipt_email": null,
+            "review": null,
+            "setup_future_usage": null,
+            "shipping": null,
+            "source": null,
+            "statement_descriptor": null,
+            "statement_descriptor_suffix": null,
+            "status": "succeeded",
+            "transfer_data": null,
+            "transfer_group": null
+        },
+        "payment_link": null,
+        "payment_method_collection": "if_required",
+        "payment_method_configuration_details": {
+            "id": "pmc_1TIgaT1Hq4qjXYyyHkFbvayY",
+            "parent": null
+        },
+        "payment_method_options": {
+            "card": {
+                "request_three_d_secure": "automatic"
+            }
+        },
+        "payment_method_types": [
+            "card",
+            "klarna",
+            "affirm",
+            "amazon_pay"
+        ],
+        "payment_status": "paid",
+        "permissions": null,
+        "phone_number_collection": {
+            "enabled": false
+        },
+        "recovered_from": null,
+        "saved_payment_method_options": null,
+        "setup_intent": null,
+        "shipping_address_collection": null,
+        "shipping_cost": null,
+        "shipping_options": [],
+        "status": "complete",
+        "submit_type": null,
+        "subscription": null,
+        "success_url": "http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}",
+        "total_details": {
+            "amount_discount": 0,
+            "amount_shipping": 0,
+            "amount_tax": 0
+        },
+        "ui_mode": "hosted_page",
+        "url": null,
+        "wallet_options": null
+    },
+    {
+        "object": "list",
+        "data": [
+            {
+                "id": "li_1TJLbF1Hq4qjXYyyrVaDRgcv",
+                "object": "item",
+                "adjustable_quantity": null,
+                "amount_discount": 0,
+                "amount_subtotal": 5000,
+                "amount_tax": 0,
+                "amount_total": 5000,
+                "currency": "usd",
+                "description": "Node.js and Express book",
+                "metadata": {},
+                "price": {
+                    "id": "price_1TJLbF1Hq4qjXYyylijsaE75",
+                    "object": "price",
+                    "active": false,
+                    "billing_scheme": "per_unit",
+                    "created": 1775514389,
+                    "currency": "usd",
+                    "custom_unit_amount": null,
+                    "livemode": false,
+                    "lookup_key": null,
+                    "metadata": {},
+                    "nickname": null,
+                    "product": "prod_UHuHbLTy5HieiT",
+                    "recurring": null,
+                    "tax_behavior": "unspecified",
+                    "tiers_mode": null,
+                    "transform_quantity": null,
+                    "type": "one_time",
+                    "unit_amount": 5000,
+                    "unit_amount_decimal": "5000"
+                },
+                "quantity": 1
+            },
+            {
+                "id": "li_1TJLbF1Hq4qjXYyyhUKvg4zx",
+                "object": "item",
+                "adjustable_quantity": null,
+                "amount_discount": 0,
+                "amount_subtotal": 4000,
+                "amount_tax": 0,
+                "amount_total": 4000,
+                "currency": "usd",
+                "description": "JavaScript T-Shirt",
+                "metadata": {},
+                "price": {
+                    "id": "price_1TJLbF1Hq4qjXYyyeAx8DLpk",
+                    "object": "price",
+                    "active": false,
+                    "billing_scheme": "per_unit",
+                    "created": 1775514389,
+                    "currency": "usd",
+                    "custom_unit_amount": null,
+                    "livemode": false,
+                    "lookup_key": null,
+                    "metadata": {},
+                    "nickname": null,
+                    "product": "prod_UHv7Kuu6jQQGh1",
+                    "recurring": null,
+                    "tax_behavior": "unspecified",
+                    "tiers_mode": null,
+                    "transform_quantity": null,
+                    "type": "one_time",
+                    "unit_amount": 2000,
+                    "unit_amount_decimal": "2000"
+                },
+                "quantity": 2
+            }
+        ],
+        "has_more": false,
+        "url": "/v1/checkout/sessions/cs_test_b14dsYixUqHwvy2YB80Aqkt05zjXlMjvhdF6RnbdxM8l1y7GRz8gpmO4wT/line_items"
+    }
+]
