@@ -1,11 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const stripe=require('stripe')(process.env.STRIPE_SECRET_KEY)
-const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log("Server running");
-});
 const app = express()
 app.use(express.json());
 app.set('view engine', 'ejs')
@@ -13,6 +9,12 @@ app.set('view engine', 'ejs')
 app.get('/', (req, res) => {
     res.render('index.ejs')
 })
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("Server running");
+});
 app.post('/checkout', async (req,res)=>{
     const session = await stripe.checkout.sessions.create({
         line_items:[
